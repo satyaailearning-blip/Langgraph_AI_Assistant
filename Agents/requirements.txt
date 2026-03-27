@@ -1,0 +1,15 @@
+fastapi
+uvicorn
+streamlit
+langchain
+langgraph
+langchain-openai
+langchain-community
+langchain-text-splitters
+openai
+chromadb
+python-dotenv
+twilio
+pypdf
+faiss-cpu
+python-multipart
