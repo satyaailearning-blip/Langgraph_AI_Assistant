@@ -1,9 +1,11 @@
-# Python
+# Python bytecode
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
+
+# Build/Distribution
 build/
 develop-eggs/
 dist/
@@ -19,34 +21,56 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+pip-log.txt
+pip-delete-this-directory.txt
 
 # Virtual environments
 venv/
 ENV/
 env/
 .venv
+Agents/venv/
 
-# IDE
+# IDE & Editors
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
+*.sublime-project
+*.sublime-workspace
 
-# Environment variables
+# Environment & Secrets
 .env
 .env.local
 .env.*.local
+.env.*.local
 
-# Data
+# Data & Databases
 Agents/data/
 Agents/vector_db/
 *.faiss
+*.db
+*.sqlite
+*.sqlite3
 
-# OS
+# OS files
 .DS_Store
 Thumbs.db
+ehthumbs.db
 
 # Logs
 *.log
 logs/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Git
+.git
+.gitignore
+
+# Docker specific
+.dockerignore
