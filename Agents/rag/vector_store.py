@@ -1,11 +1,16 @@
 from dotenv import load_dotenv
 import os
+import logging
 
 load_dotenv()
 
 from rag.document_loader import load_documents
 from langchain_community.vectorstores import FAISS
 from langchain_openai import OpenAIEmbeddings
+
+# Setup logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 def _get_vector_db_path():
@@ -14,35 +19,80 @@ def _get_vector_db_path():
 
 
 def create_vector_db():
-    print("Loading documents...")
-    docs = load_documents()
-
-    print("Creating embeddings...")
-    embeddings = OpenAIEmbeddings()
-
-    db = FAISS.from_documents(docs, embeddings)
+    """Create vector database from documents with detailed logging."""
     vector_db_path = _get_vector_db_path()
-    os.makedirs(vector_db_path, exist_ok=True)
-    db.save_local(vector_db_path)
-
-    print("Vector database created successfully!", vector_db_path)
-    return db
+    
+    logger.info("=" * 60)
+    logger.info("VECTOR DB CREATION STARTED")
+    logger.info("=" * 60)
+    
+    try:
+        logger.info(f"📁 Vector DB Path: {vector_db_path}")
+        
+        logger.info("📄 Loading documents...")
+        docs = load_documents()
+        logger.info(f"✓ Loaded {len(docs)} document chunks")
+        
+        logger.info("🔑 Creating embeddings...")
+        embeddings = OpenAIEmbeddings()
+        logger.info("✓ OpenAI embeddings initialized")
+        
+        logger.info("🏢 Building FAISS index...")
+        db = FAISS.from_documents(docs, embeddings)
+        logger.info("✓ FAISS index built successfully")
+        
+        logger.info("💾 Saving vector database...")
+        os.makedirs(vector_db_path, exist_ok=True)
+        db.save_local(vector_db_path)
+        logger.info(f"✓ Vector database saved at: {vector_db_path}")
+        
+        logger.info("=" * 60)
+        logger.info("✓✓✓ VECTOR DB CREATION SUCCESSFUL ✓✓✓")
+        logger.info("=" * 60)
+        
+        return db
+        
+    except Exception as e:
+        logger.error("=" * 60)
+        logger.error(f"✗✗✗ VECTOR DB CREATION FAILED ✗✗✗")
+        logger.error(f"Error: {str(e)}")
+        logger.error("=" * 60)
+        raise
 
 
 def load_vector_db():
+    """Load existing vector database with detailed logging."""
     embeddings = OpenAIEmbeddings()
     vector_db_path = _get_vector_db_path()
+    
+    logger.info("=" * 60)
+    logger.info("VECTOR DB LOADING STARTED")
+    logger.info("=" * 60)
+    logger.info(f"📁 Looking for Vector DB at: {vector_db_path}")
 
     if not os.path.exists(vector_db_path):
-        raise FileNotFoundError(f"Vector DB not found at: {vector_db_path}. Run create_vector_db() first.")
+        logger.warning(f"✗ Vector DB path does not exist: {vector_db_path}")
+        raise FileNotFoundError(f"Vector DB not found at: {vector_db_path}")
 
-    db = FAISS.load_local(
-        vector_db_path,
-        embeddings,
-        allow_dangerous_deserialization=True
-    )
-
-    return db
+    try:
+        logger.info("🔄 Loading FAISS index...")
+        db = FAISS.load_local(
+            vector_db_path,
+            embeddings,
+            allow_dangerous_deserialization=True
+        )
+        logger.info("✓ FAISS index loaded successfully")
+        logger.info("=" * 60)
+        logger.info("✓✓✓ VECTOR DB LOADED SUCCESSFULLY ✓✓✓")
+        logger.info("=" * 60)
+        return db
+        
+    except Exception as e:
+        logger.error("=" * 60)
+        logger.error(f"✗✗✗ VECTOR DB LOADING FAILED ✗✗✗")
+        logger.error(f"Error: {str(e)}")
+        logger.error("=" * 60)
+        raise
 
 
 def retrieve_docs(query):

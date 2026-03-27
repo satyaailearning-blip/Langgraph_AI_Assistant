@@ -44,6 +44,31 @@ def home():
     return {"status": "WhatsApp AI Assistant is running"}
 
 
+@app.get("/health")
+def health_check():
+    """Health check endpoint to verify vector DB status."""
+    try:
+        from rag.vector_store import load_vector_db
+        db = load_vector_db()
+        return {
+            "status": "healthy",
+            "vector_db": "ready",
+            "message": "WhatsApp AI Assistant is fully operational with RAG capability"
+        }
+    except FileNotFoundError:
+        return {
+            "status": "initializing",
+            "vector_db": "not_ready",
+            "message": "Vector DB still being created. Please wait..."
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "vector_db": "failed",
+            "message": f"Error: {str(e)}"
+        }
+
+
 @app.get("/whatsapp")
 def whatsapp_get():
     return {"message": "This endpoint only accepts POST requests from Twilio."}
