@@ -1,5 +1,6 @@
 import os
 import sys
+import asyncio
 
 from fastapi import FastAPI, Form, Request
 from fastapi.responses import PlainTextResponse
@@ -9,9 +10,33 @@ from twilio.twiml.messaging_response import MessagingResponse
 sys.path.insert(0, os.path.dirname(__file__))
 
 from graph_builder import build_graph
+from rag.vector_store import load_vector_db, create_vector_db
 
 app = FastAPI()
 graph = build_graph()
+
+# Initialize vector DB at startup
+@app.on_event("startup")
+async def startup_event():
+    """Initialize vector database on app startup."""
+    print("=" * 50)
+    print("Initializing Vector Database...")
+    print("=" * 50)
+    
+    try:
+        # Try to load existing vector DB
+        db = load_vector_db()
+        print("✓ Vector DB loaded successfully!")
+    except FileNotFoundError:
+        print("Vector DB not found. Creating from documents...")
+        try:
+            db = create_vector_db()
+            print("✓ Vector DB created successfully!")
+        except Exception as e:
+            print(f"✗ Error creating vector DB: {e}")
+            print("RAG functionality may not be available")
+    except Exception as e:
+        print(f"✗ Unexpected error: {e}")
 
 
 @app.get("/")
