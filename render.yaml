@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: langgraph-ai-assistant
+    env: docker
+    dockerfilePath: ./Dockerfile
+    region: ohio
+    plan: free
+    envVars:
+      - key: PYTHONUNBUFFERED
+        value: "1"
+      - key: OPENAI_API_KEY
+        fromSecret: OPENAI_API_KEY
