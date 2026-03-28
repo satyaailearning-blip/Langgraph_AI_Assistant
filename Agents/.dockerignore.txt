@@ -1,7 +1,4 @@
-git add Agents/data/documents/
-git status  # Verify they show as "Changes to be committed"
-git commit -m "Add RAG documents"
-git push origin main# Python bytecode
+# Python bytecode
 __pycache__/
 *.py[cod]
 *$py.class
