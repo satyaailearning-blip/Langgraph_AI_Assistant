@@ -28,9 +28,17 @@ def create_vector_db():
     
     try:
         logger.info(f"📁 Vector DB Path: {vector_db_path}")
+        logger.info(f"📁 Ensuring directory exists...")
+        os.makedirs(vector_db_path, exist_ok=True)
+        logger.info(f"✓ Directory ready: {vector_db_path}")
         
         logger.info("📄 Loading documents...")
         docs = load_documents()
+        
+        if not docs:
+            logger.error("❌ No documents were loaded!")
+            raise ValueError("No documents found to create vector DB")
+            
         logger.info(f"✓ Loaded {len(docs)} document chunks")
         
         logger.info("🔑 Creating embeddings...")
@@ -42,9 +50,12 @@ def create_vector_db():
         logger.info("✓ FAISS index built successfully")
         
         logger.info("💾 Saving vector database...")
-        os.makedirs(vector_db_path, exist_ok=True)
         db.save_local(vector_db_path)
         logger.info(f"✓ Vector database saved at: {vector_db_path}")
+        
+        # Verify files were created
+        saved_files = os.listdir(vector_db_path)
+        logger.info(f"✓ Created files: {saved_files}")
         
         logger.info("=" * 60)
         logger.info("✓✓✓ VECTOR DB CREATION SUCCESSFUL ✓✓✓")
@@ -55,7 +66,8 @@ def create_vector_db():
     except Exception as e:
         logger.error("=" * 60)
         logger.error(f"✗✗✗ VECTOR DB CREATION FAILED ✗✗✗")
-        logger.error(f"Error: {str(e)}")
+        logger.error(f"Error Type: {type(e).__name__}")
+        logger.error(f"Error Message: {str(e)}")
         logger.error("=" * 60)
         raise
 
@@ -70,9 +82,16 @@ def load_vector_db():
     logger.info("=" * 60)
     logger.info(f"📁 Looking for Vector DB at: {vector_db_path}")
 
+    # Check if path exists AND contains FAISS index files
     if not os.path.exists(vector_db_path):
         logger.warning(f"✗ Vector DB path does not exist: {vector_db_path}")
         raise FileNotFoundError(f"Vector DB not found at: {vector_db_path}")
+    
+    # Check if FAISS index file exists
+    index_file = os.path.join(vector_db_path, "index.faiss")
+    if not os.path.exists(index_file):
+        logger.warning(f"✗ FAISS index file not found: {index_file}")
+        raise FileNotFoundError(f"FAISS index file not found at: {index_file}")
 
     try:
         logger.info("🔄 Loading FAISS index...")

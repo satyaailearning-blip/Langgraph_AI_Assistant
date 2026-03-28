@@ -27,16 +27,18 @@ async def startup_event():
         # Try to load existing vector DB
         db = load_vector_db()
         print("✓ Vector DB loaded successfully!")
-    except FileNotFoundError:
-        print("Vector DB not found. Creating from documents...")
+    except Exception as load_error:
+        # Any error loading (FileNotFoundError, FAISS error, etc.) means we need to create
+        print(f"Vector DB not found or corrupted. Creating from documents...")
+        print(f"(Load error: {type(load_error).__name__})")
         try:
             db = create_vector_db()
             print("✓ Vector DB created successfully!")
-        except Exception as e:
-            print(f"✗ Error creating vector DB: {e}")
+        except Exception as create_error:
+            print(f"✗ Error creating vector DB: {create_error}")
             print("RAG functionality may not be available")
-    except Exception as e:
-        print(f"✗ Unexpected error: {e}")
+            import traceback
+            traceback.print_exc()
 
 
 @app.get("/")
