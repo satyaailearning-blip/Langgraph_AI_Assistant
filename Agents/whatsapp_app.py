@@ -1,6 +1,7 @@
 import os
 import sys
 import asyncio
+import shutil
 
 from fastapi import FastAPI, Form, Request
 from fastapi.responses import PlainTextResponse
@@ -68,6 +69,57 @@ def health_check():
             "status": "error",
             "vector_db": "failed",
             "message": f"Error: {str(e)}"
+        }
+
+
+@app.post("/rebuild-vector-db")
+async def rebuild_vector_db():
+    """
+    Manually rebuild vector database from documents.
+    Useful when documents are added/removed/updated.
+    """
+    print("=" * 60)
+    print("MANUAL VECTOR DB REBUILD INITIATED")
+    print("=" * 60)
+    
+    try:
+        # Step 1: Delete existing vector DB
+        vector_db_path = os.path.join(os.path.dirname(__file__), "data", "vector_db")
+        
+        if os.path.exists(vector_db_path):
+            print(f"🗑️  Deleting existing vector DB at: {vector_db_path}")
+            shutil.rmtree(vector_db_path)
+            print("✓ Existing vector DB deleted")
+        else:
+            print(f"ℹ️  Vector DB path does not exist: {vector_db_path}")
+        
+        # Step 2: Create fresh vector DB from documents
+        print("🔄 Creating fresh vector DB from documents...")
+        db = create_vector_db()
+        
+        print("=" * 60)
+        print("✓✓✓ VECTOR DB REBUILD SUCCESSFUL ✓✓✓")
+        print("=" * 60)
+        
+        return {
+            "status": "success",
+            "message": "Vector database rebuilt successfully",
+            "vector_db_path": vector_db_path,
+            "timestamp": __import__('datetime').datetime.now().isoformat()
+        }
+        
+    except Exception as e:
+        print("=" * 60)
+        print(f"✗✗✗ VECTOR DB REBUILD FAILED ✗✗✗")
+        print(f"Error: {str(e)}")
+        print("=" * 60)
+        import traceback
+        traceback.print_exc()
+        
+        return {
+            "status": "failed",
+            "error": str(e),
+            "message": "Failed to rebuild vector database"
         }
 
 
