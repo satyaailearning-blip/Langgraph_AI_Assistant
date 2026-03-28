@@ -39,8 +39,8 @@ env/
 .env.*.local
 
 # Data
-Agents/data/
-Agents/vector_db/
+# Exclude only generated vector database
+Agents/data/vector_db/
 *.faiss
 
 # OS
