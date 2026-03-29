@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LangGraph Multi-Agent WhatsApp AI Assistant - Deployment Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: white;
+        }
+        
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+            }
+            .page-break {
+                page-break-after: always;
+            }
+            a {
+                color: #0066cc;
+                text-decoration: underline;
+            }
+            h1, h2, h3 {
+                page-break-after: avoid;
+            }
+            table {
+                page-break-inside: avoid;
+            }
+            code {
+                background: #f5f5f5;
+                padding: 2px 4px;
+                border-radius: 3px;
+            }
+        }
+        
+        .container {
+            max-width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            padding: 20mm;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30mm;
+            border-bottom: 3px solid #0066cc;
+            padding-bottom: 10mm;
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            color: #0066cc;
+            margin-bottom: 5px;
+        }
+        
+        .header p {
+            font-size: 14px;
+            color: #666;
+            margin: 5px 0;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            background: #21BA45;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin: 10px 0;
+        }
+        
+        h1 {
+            font-size: 28px;
+            color: #0066cc;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            border-left: 5px solid #0066cc;
+            padding-left: 10px;
+        }
+        
+        h2 {
+            font-size: 22px;
+            color: #0066cc;
+            margin-top: 15px;
+            margin-bottom: 8px;
+        }
+        
+        h3 {
+            font-size: 16px;
+            color: #333;
+            margin-top: 12px;
+            margin-bottom: 8px;
+        }
+        
+        p {
+            margin-bottom: 8px;
+            font-size: 11px;
+        }
+        
+        ul, ol {
+            margin-left: 20px;
+            margin-bottom: 10px;
+            font-size: 11px;
+        }
+        
+        li {
+            margin-bottom: 5px;
+        }
+        
+        code, pre {
+            background-color: #f5f5f5;
+            border-left: 3px solid #0066cc;
+            padding: 8px 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 10px;
+            overflow-x: auto;
+            margin: 8px 0;
+            border-radius: 3px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+            font-size: 10px;
+        }
+        
+        table th {
+            background-color: #0066cc;
+            color: white;
+            padding: 8px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        
+        table td {
+            padding: 8px;
+            border: 1px solid #ddd;
+        }
+        
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .section {
+            margin-bottom: 15mm;
+        }
+        
+        .box {
+            background-color: #f0f8ff;
+            border-left: 4px solid #0066cc;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 3px;
+            font-size: 10px;
+        }
+        
+        .warning {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 3px;
+            font-size: 10px;
+        }
+        
+        .success {
+            background-color: #d4edda;
+            border-left: 4px solid #21BA45;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 3px;
+            font-size: 10px;
+        }
+        
+        .architecture {
+            background: #f5f5f5;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            font-size: 9px;
+            font-family: monospace;
+            border-radius: 3px;
+            overflow-x: auto;
+        }
+        
+        .page-break {
+            page-break-after: always;
+            margin: 30px 0;
+        }
+        
+        .toc {
+            background: #f9f9f9;
+            padding: 15px;
+            border: 1px solid #ddd;
+            margin-bottom: 20mm;
+            border-radius: 3px;
+            font-size: 10px;
+        }
+        
+        .toc h3 {
+            margin-top: 0;
+        }
+        
+        .toc ul {
+            margin-left: 15px;
+        }
+        
+        .footer {
+            text-align: center;
+            font-size: 9px;
+            color: #999;
+            margin-top: 20mm;
+            border-top: 1px solid #ddd;
+            padding-top: 5mm;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Title Page -->
+        <div class="header">
+            <h1>🚀 LangGraph Multi-Agent WhatsApp AI Assistant</h1>
+            <p>Complete Deployment Guide</p>
+            <span class="status-badge">✓ Production Ready</span>
+            <p style="margin-top: 15px; font-size: 12px;">
+                <strong>Project:</strong> Multi-Agent RAG + General AI System<br>
+                <strong>Platform:</strong> Render Cloud (24/7 Hosting)<br>
+                <strong>Interface:</strong> WhatsApp via Twilio<br>
+                <strong>Date:</strong> March 29, 2026
+            </p>
+        </div>
+
+        <!-- Table of Contents -->
+        <div class="toc">
+            <h3>Table of Contents</h3>
+            <ul>
+                <li>1. System Overview & Architecture</li>
+                <li>2. Prerequisites & Requirements</li>
+                <li>3. Quick Start Deployment</li>
+                <li>4. Cloud Configuration (Render)</li>
+                <li>5. Twilio Integration Setup</li>
+                <li>6. API Endpoints Reference</li>
+                <li>7. Document Management</li>
+                <li>8. Configuration & Customization</li>
+                <li>9. Monitoring & Maintenance</li>
+                <li>10. Troubleshooting Guide</li>
+            </ul>
+        </div>
+
+        <!-- Section 1 -->
+        <div class="section">
+            <h1>1. System Overview & Architecture</h1>
+            
+            <h2>1.1 What is This System?</h2>
+            <p>A production-ready AI assistant that:</p>
+            <ul>
+                <li>Receives queries via WhatsApp messaging</li>
+                <li>Intelligently routes questions to RAG (document-based) or General (LLM-based) agents</li>
+                <li>Searches PDF documents using semantic embeddings (FAISS)</li>
+                <li>Responds with context-aware answers in 2-5 seconds</li>
+                <li>Runs 24/7 on cloud without user's local machine</li>
+            </ul>
+
+            <h2>1.2 Architecture Diagram</h2>
+            <div class="architecture">
+User Query (WhatsApp)
+         ↓
+    Twilio Webhook
+         ↓
+FastAPI Server (Render Cloud)
+         ↓
+    LangGraph Router
+         ↓
+    ├→ [Keyword Check]
+    │  └→ Document mentioned?
+    │
+    ├→ [RAG Agent]
+    │  ├→ Query FAISS Vector DB
+    │  ├→ Retrieve Top 5 Chunks
+    │  └→ Generate Context-Aware Response
+    │
+    └→ [General Agent]
+       └→ Direct LLM Response (GPT-4o-mini)
+            </div>
+
+            <h2>1.3 Key Statistics</h2>
+            <table>
+                <tr>
+                    <th>Metric</th>
+                    <th>Value</th>
+                </tr>
+                <tr>
+                    <td>Response Time</td>
+                    <td>2-5 seconds</td>
+                </tr>
+                <tr>
+                    <td>Documents Indexed</td>
+                    <td>3 PDFs (165 pages)</td>
+                </tr>
+                <tr>
+                    <td>Vector DB Chunks</td>
+                    <td>560 searchable segments</td>
+                </tr>
+                <tr>
+                    <td>Vector DB Size</td>
+                    <td>~2MB (FAISS)</td>
+                </tr>
+                <tr>
+                    <td>Cloud Platform</td>
+                    <td>Render (750h/month free)</td>
+                </tr>
+                <tr>
+                    <td>Daily Capacity</td>
+                    <td>~100 queries on free tier</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="page-break"></div>
+
+        <!-- Section 2 -->
+        <div class="section">
+            <h1>2. Prerequisites & Requirements</h1>
+
+            <h2>2.1 Software Requirements</h2>
+            <ul>
+                <li><strong>Python 3.11 or higher</strong> - For local development</li>
+                <li><strong>Git</strong> - Version control</li>
+                <li><strong>GitHub Account</strong> - Repository hosting</li>
+                <li><strong>Docker Desktop</strong> (optional) - Local containerization</li>
+            </ul>
+
+            <h2>2.2 Third-Party Services & API Keys</h2>
+            <table>
+                <tr>
+                    <th>Service</th>
+                    <th>Purpose</th>
+                    <th>Setup Time</th>
+                </tr>
+                <tr>
+                    <td>OpenAI API</td>
+                    <td>LLM & Embeddings (GPT-4o-mini)</td>
+                    <td>5 min</td>
+                </tr>
+                <tr>
+                    <td>Twilio Account</td>
+                    <td>WhatsApp Integration</td>
+                    <td>10 min</td>
+                </tr>
+                <tr>
+                    <td>Render Account</td>
+                    <td>Cloud Hosting (Free: 750h/month)</td>
+                    <td>5 min</td>
+                </tr>
+                <tr>
+                    <td>GitHub Repository</td>
+                    <td>Deployment Pipeline</td>
+                    <td>5 min</td>
+                </tr>
+            </table>
+
+            <h2>2.3 Obtaining API Keys</h2>
+            
+            <h3>OpenAI API Key:</h3>
+            <ol>
+                <li>Visit: https://platform.openai.com/api-keys</li>
+                <li>Click "Create new secret key"</li>
+                <li>Copy the key (you won't see it again)</li>
+                <li>Store safely in environment variables</li>
+            </ol>
+
+            <h3>Twilio WhatsApp:</h3>
+            <ol>
+                <li>Create account at https://www.twilio.com</li>
+                <li>Verify phone number</li>
+                <li>Go to Messaging → Try it Out → Send WhatsApp</li>
+                <li>Request production access or use sandbox</li>
+            </ol>
+
+            <h3>Render Account:</h3>
+            <ol>
+                <li>Visit https://render.com</li>
+                <li>Sign up with GitHub</li>
+                <li>Connect your repository</li>
+                <li>Create Web Service</li>
+            </ol>
+        </div>
+
+        <div class="page-break"></div>
+
+        <!-- Section 3 -->
+        <div class="section">
+            <h1>3. Quick Start Deployment (5 Steps)</h1>
+
+            <div class="success">
+                <strong>⏱ Expected Time: 15 minutes</strong><br>
+                This is the fastest way to get the system live.
+            </div>
+
+            <h2>3.1 Step 1: Clone Repository</h2>
+            <pre>git clone https://github.com/satyaailearning-blip/Langgraph_AI_Assistant.git
+cd Langgraph_AI_Assistant
+git push  # Ensure your GitHub is up to date</pre>
+
+            <h2>3.2 Step 2: Create Render Service</h2>
+            <ol>
+                <li>Go to https://render.com → Dashboard</li>
+                <li>Click "New +" → "Web Service"</li>
+                <li>Connect your GitHub repository</li>
+                <li>Select branch: <code>main</code></li>
+                <li>Render auto-detects <code>render.yaml</code> and uses Docker</li>
+                <li>Click "Create Web Service" and wait 2-3 minutes</li>
+            </ol>
+
+            <h2>3.3 Step 3: Configure Environment Variables</h2>
+            <p><strong>In Render Dashboard:</strong></p>
+            <ol>
+                <li>Select your service</li>
+                <li>Click "Environment" tab</li>
+                <li>Add new variable:</li>
+            </ol>
+            <pre>Key:   OPENAI_API_KEY
+Value: sk-your-openai-key-here
+
+Key:   Additional (optional)
+Value: settings</pre>
+            <p><strong>Note:</strong> Deploy after adding variables. Service auto-redeploys.</p>
+
+            <h2>3.4 Step 4: Verify Deployment</h2>
+            <p>Visit: <code>https://langgraph-ai-assistant.onrender.com/health</code></p>
+            <p>Expected response:</p>
+            <pre>{
+  "status": "healthy",
+  "vector_db": "ready"
+}</pre>
+
+            <h2>3.5 Step 5: Update Twilio Webhook</h2>
+            <ol>
+                <li>Twilio Console → Messaging → WhatsApp</li>
+                <li>Find "When a message comes in" (POST)</li>
+                <li>Change URL from Cloudflare to:</li>
+            </ol>
+            <pre>https://langgraph-ai-assistant.onrender.com/whatsapp</pre>
+            <ol start="4">
+                <li>Method: <code>POST</code></li>
+                <li>Click "Save"</li>
+                <li>Test by sending WhatsApp message</li>
+            </ol>
+
+            <div class="success">
+                <strong>✓ Your system is now LIVE!</strong><br>
+                WhatsApp messages will now route through Render cloud.
+            </div>
+        </div>
+
+        <div class="page-break"></div>
+
+        <!-- Section 4 -->
+        <div class="section">
+            <h1>4. Cloud Configuration Details (Render)</h1>
+
+            <h2>4.1 Render Service Structure</h2>
+            <pre>Name:              langgraph-ai-assistant
+Type:              Web Service
+Environment:       Docker
+Region:            Free (default)
+Deployment:        Auto-deploy on GitHub push
+Restart Policy:    Always
+RAM:               512MB (free tier)
+CPU:               0.5 CPU (free tier)</pre>
+
+            <h2>4.2 render.yaml Configuration</h2>
+            <p>This file auto-configures Render:</p>
+            <pre>services:
+  - type: web
+    name: langgraph-ai-assistant
+    env: docker
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: OPENAI_API_KEY
+        scope: build
+      - key: OPENAI_API_KEY
+        scope: runtime</pre>
+
+            <h2>4.3 Monitoring Deployment Progress</h2>
+            <table>
+                <tr>
+                    <th>Stage</th>
+                    <th>Status</th>
+                    <th>Duration</th>
+                </tr>
+                <tr>
+                    <td>GitHub Webhook Received</td>
+                    <td>⏳ Building</td>
+                    <td>5-10 sec</td>
+                </tr>
+                <tr>
+                    <td>Docker Image Build</td>
+                    <td>⏳ Building</td>
+                    <td>30-45 sec</td>
+                </tr>
+                <tr>
+                    <td>Vector DB Creation</td>
+                    <td>⏳ Starting</td>
+                    <td>45-60 sec</td>
+                </tr>
+                <tr>
+                    <td>App Initialization</td>
+                    <td>✓ Running</td>
+                    <td>5-10 sec</td>
+                </tr>
+                <tr>
+                    <td>Total Redeploy Time</td>
+                    <td>✓ Live</td>
+                    <td>2-3 min</td>
+                </tr>
+            </table>
+
+            <h2>4.4 Checking Logs</h2>
+            <p>In Render Dashboard:</p>
+            <ol>
+                <li>Select your service</li>
+                <li>Click "Logs" tab</li>
+                <li>Look for success patterns:</li>
+            </ol>
+            <pre>✓✓✓ VECTOR DB CREATION SUCCESSFUL ✓✓✓
+INFO:     Uvicorn running on http://0.0.0.0:8000
+==> Your service is live 🎉</pre>
+
+            <h2>4.5 Scaling Beyond Free Tier</h2>
+            <table>
+                <tr>
+                    <th>Feature</th>
+                    <th>Free</th>
+                    <th>Pro</th>
+                </tr>
+                <tr>
+                    <td>Monthly Hours</td>
+                    <td>750h</td>
+                    <td>Unlimited</td>
+                </tr>
+                <tr>
+                    <td>RAM</td>
+                    <td>512MB</td>
+                    <td>1GB+</td>
+                </tr>
+                <tr>
+                    <td>CPU</td>
+                    <td>0.5</td>
+                    <td>1.0+</td>
+                </tr>
+                <tr>
+                    <td>Cost</td>
+                    <td>$0</td>
+                    <td>$7/month</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="page-break"></div>
+
+        <!-- Section 5 -->
+        <div class="section">
+            <h1>5. Twilio Integration Setup</h1>
+
+            <h2>5.1 Why Twilio?</h2>
+            <p>Twilio acts as a bridge between WhatsApp and your FastAPI server. It:</p>
+            <ul>
+                <li>Receives WhatsApp messages from users</li>
+                <li>Forwards them to your webhook (<code>/whatsapp</code> endpoint)</li>
+                <li>Converts your responses back to WhatsApp messages</li>
+                <li>Handles rate limiting and message formatting</li>
+            </ul>
+
+            <h2>5.2 Setup Instructions</h2>
+
+            <h3>Part A: Get Twilio Credentials</h3>
+            <ol>
+                <li>Visit: https://www.twilio.com/console</li>
+                <li>Account SID: Copy from dashboard</li>
+                <li>Auth Token: Copy from dashboard</li>
+                <li>Note: Keep these secure, never commit to GitHub</li>
+            </ol>
+
+            <h3>Part B: Configure WhatsApp Sandbox</h3>
+            <ol>
+                <li>Messaging → Try it Out → Send WhatsApp</li>
+                <li>Join sandbox with your personal WhatsApp number</li>
+                <li>Send a test message (e.g., "join example")</li>
+                <li>Receive confirmation from Twilio</li>
+            </ol>
+
+            <h3>Part C: Update Webhook URL</h3>
+            <ol>
+                <li>Still in WhatsApp Console</li>
+                <li>Find "When a message comes in"</li>
+                <li>Clear old URL (Cloudflare tunnel)</li>
+                <li>Enter: <code>https://langgraph-ai-assistant.onrender.com/whatsapp</code></li>
+                <li>Method: <code>POST</code></li>
+                <li>Save configuration</li>
+            </ol>
+
+            <h2>5.3 Testing the Integration</h2>
+            <ol>
+                <li>Open WhatsApp on your phone</li>
+                <li>Start conversation with your Twilio WhatsApp number</li>
+                <li>Send message: "Hello"</li>
+                <li>Expected response: AI assistant responds within 5 seconds</li>
+            </ol>
+
+            <h2>5.4 Webhook Request/Response Format</h2>
+            <p><strong>Incoming Request (Twilio → Your Server):</strong></p>
+            <pre>POST /whatsapp
+Content-Type: application/x-www-form-urlencoded
+
+From=whatsapp:+1234567890
+To=whatsapp:+2348123456789
+Body=What is the adequacy report?</pre>
+
+            <p><strong>Outgoing Response (Your Server → Twilio):</strong></p>
+            <pre>&lt;Response&gt;
+  &lt;Message&gt;Here is the information...&lt;/Message&gt;
+&lt;/Response&gt;</pre>
+
+            <div class="warning">
+                <strong>⚠ Important:</strong> Render webhook must be HTTPS and publicly accessible. Twilio cannot reach localhost or private IPs.
+            </div>
+        </div>
+
+        <div class="page-break"></div>
+
+        <!-- Section 6 -->
+        <div class="section">
+            <h1>6. API Endpoints Reference</h1>
+
+            <h2>6.1 Health Check Endpoint</h2>
+            <pre>GET /health
+Returns: System status and vector DB readiness
+
+Response (Success):
+{
+  "status": "healthy",
+  "vector_db": "ready",
+  "message": "WhatsApp AI Assistant is fully operational..."
+}
+
+Response (Vector DB Creating):
+{
+  "status": "initializing",
+  "vector_db": "not_ready",
+  "message": "Vector DB still being created..."
+}
+
+Response (Error):
+{
+  "status": "error",
+  "vector_db": "failed",
+  "message": "Error: ..."
+}</pre>
+
+            <h2>6.2 Rebuild Vector Database</h2>
+            <pre>POST /rebuild-vector-db
+Rebuilds vector DB after documents added/removed
+
+Response (Success):
+{
+  "status": "success",
+  "message": "Vector database rebuilt successfully",
+  "vector_db_path": "/app/Agents/data/vector_db",
+  "timestamp": "2026-03-29T12:00:00.000000"
+}
+
+Response (Failure):
+{
+  "status": "failed",
+  "error": "Error message here",
+  "message": "Failed to rebuild vector database"
+}</pre>
+
+            <h2>6.3 WhatsApp Webhook</h2>
+            <pre>POST /whatsapp
+Receives WhatsApp messages via Twilio
+
+Automatic Processing:
+1. Receives message from Twilio
+2. Routes to RAG or General Agent
+3. Generates response (2-5 seconds)
+4. Sends back to WhatsApp user
+
+No manual invocation needed</pre>
+
+            <h2>6.4 Home Endpoint</h2>
+            <pre>GET /
+Returns: Simple status message
+
+Response:
+{
+  "status": "WhatsApp AI Assistant is running"
+}</pre>
+
+            <h2>6.5 Curl Examples</h2>
+            <pre># Check health
+curl https://langgraph-ai-assistant.onrender.com/health
+
+# Rebuild vector DB
+curl -X POST https://langgraph-ai-assistant.onrender.com/rebuild-vector-db
+
+# Get home info
+curl https://langgraph-ai-assistant.onrender.com/</pre>
+        </div>
+
+        <div class="page-break"></div>
+
+        <!-- Section 7 -->
+        <div class="section">
+            <h1>7. Document Management</h1>
+
+            <h2>7.1 Current Documents</h2>
+            <table>
+                <tr>
+                    <th>File</th>
+                    <th>Pages</th>
+                    <th>Size</th>
+                    <th>Purpose</th>
+                </tr>
+                <tr>
+                    <td>FEED_SOW_IA1234.pdf</td>
+                    <td>~50</td>
+                    <td>2.4MB</td>
+                    <td>Scope of Work</td>
+                </tr>
+                <tr>
+                    <td>uad_ltdp2_sow.pdf</td>
+                    <td>~40</td>
+                    <td>252KB</td>
+                    <td>UAD LTDP-2 SOW</td>
+                </tr>
+                <tr>
+                    <td>uad_LTDP_adequacy_report.pdf</td>
+                    <td>~75</td>
+                    <td>1.2MB</td>
+                    <td>Adequacy Report</td>
+                </tr>
+                <tr>
+                    <td><strong>Total</strong></td>
+                    <td><strong>165</strong></td>
+                    <td><strong>3.9MB</strong></td>
+                    <td><strong>→ 560 chunks</strong></td>
+                </tr>
+            </table>
+
+            <h2>7.2 Adding New Documents</h2>
+
+            <h3>Procedure:</h3>
+            <ol>
+                <li><strong>Place PDF:</strong> <code>Agents/data/documents/new_doc.pdf</code></li>
+                <li><strong>Commit to Git:</strong></li>
+            </ol>
+            <pre>git add Agents/data/documents/new_doc.pdf
+git commit -m "Add: new_doc.pdf for RAG indexing"
+git push</pre>
+            <ol start="3">
+                <li><strong>Rebuild Vector DB:</strong></li>
+            </ol>
+            <pre>POST https://langgraph-ai-assistant.onrender.com/rebuild-vector-db</pre>
+            <ol start="4">
+                <li><strong>Verify:</strong> Check health endpoint confirms indexing</li>
+            </ol>
+
+            <h2>7.3 Removing Documents</h2>
+            <ol>
+                <li><strong>Delete from Folder:</strong> <code>rm Agents/data/documents/old_doc.pdf</code></li>
+                <li><strong>Commit Changes:</strong></li>
+            </ol>
+            <pre>git add Agents/data/documents/
+git commit -m "Remove: old_doc.pdf - no longer needed"
+git push</pre>
+            <ol start="3">
+                <li><strong>Rebuild Vector DB:</strong> POST to rebuild endpoint</li>
+            </ol>
+
+            <h2>7.4 Document Format & Limits</h2>
+            <table>
+                <tr>
+                    <th>Requirement</th>
+                    <th>Details</th>
+                </tr>
+                <tr>
+                    <td>Format</td>
+                    <td>PDF only (.pdf extension)</td>
+                </tr>
+                <tr>
+                    <td>Max File Size</td>
+                    <td>50MB recommended</td>
+                </tr>
+                <tr>
+                    <td>Max Total Size</td>
+                    <td>500MB (chunk storage)</td>
+                </tr>
+                <tr>
+                    <td>Supported Encodings</td>
+                    <td>UTF-8 text (scanned PDFs may not work)</td>
+                </tr>
+                <tr>
+                    <td>Naming</td>
+                    <td>Use descriptive names without spaces</td>
+                </tr>
+            </table>
+
+            <h2>7.5 Processing Pipeline</h2>
+            <pre>PDF Upload
+    ↓
+PyPDF Loader (Extract text from pages)
+    ↓
+Text Splitter (1000 char chunks, 200 overlap)
+    ↓
+OpenAI Embeddings (Vectorize each chunk)
+    ↓
+FAISS Index (Create searchable vector DB)
+    ↓
+Save to /app/Agents/data/vector_db/
+    ↓
+Ready for Semantic Search</pre>
+        </div>
+
+        <div class="page-break"></div>
+
+        <!-- Section 8 -->
+        <div class="section">
+            <h1>8. Configuration & Customization</h1>
+
+            <h2>8.1 Update Query Router Keywords</h2>
+            <p><strong>File:</strong> <code>Agents/router_agent.py</code></p>
+            <p>Edit the KEYWORDS set to add your custom keywords:</p>
+            <pre>KEYWORDS = {
+    "dcs", "tag", "adequacy", "scope", "sow",
+    "resource", "whp", "observation", "project",
+    "your_custom_keyword_1",  # Add here
+    "your_custom_keyword_2"   # Add here
+}</pre>
+            <p><strong>Effect:</strong> Queries with these keywords route to RAG Agent.</p>
+
+            <h2>8.2 Adjust Document Processing</h2>
+            <p><strong>File:</strong> <code>Agents/rag/document_loader.py</code></p>
+            <pre>splitter = RecursiveCharacterTextSplitter(
+    chunk_size=1000,        # Characters per chunk
+    chunk_overlap=200       # Character overlap
+)</pre>
+            <ul>
+                <li><strong>chunk_size:</strong> Smaller = More chunks, finer granularity</li>
+                <li><strong>chunk_overlap:</strong> Prevents losing info at boundaries</li>
+            </ul>
+
+            <h2>8.3 Change LLM Model</h2>
+            <p><strong>File:</strong> <code>Agents/graph_builder.py</code></p>
+            <pre>llm = ChatOpenAI(
+    model="gpt-4o-mini",  # Change model here
+    temperature=0         # 0=deterministic, 1=creative
+)</pre>
+            <p><strong>Available Models:</strong></p>
+            <ul>
+                <li><code>gpt-4o-mini</code> (current - fast & cheap)</li>
+                <li><code>gpt-4-turbo</code> (more powerful, slower)</li>
+                <li><code>gpt-3.5-turbo</code> (fastest, less capable)</li>
+            </ul>
+
+            <h2>8.4 Modify Response Constraints</h2>
+            <p><strong>File:</strong> <code>Agents/whatsapp_app.py</code></p>
+            <pre>MAX_RESPONSE_LENGTH = 1500  # Characters
+MAX_CONTEXT_CHUNKS = 5      # Top N documents
+TIMEOUT_SECONDS = 30        # Response timeout</pre>
+
+            <h2>8.5 Environment Variables</h2>
+            <table>
+                <tr>
+                    <th>Variable</th>
+                    <th>Example</th>
+                    <th>Required</th>
+                </tr>
+                <tr>
+                    <td>OPENAI_API_KEY</td>
+                    <td>sk-xxxxx...</td>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <td>PYTHONPATH</td>
+                    <td>/app</td>
+                    <td>No (auto)</td>
+                </tr>
+                <tr>
+                    <td>ENVIRONMENT</td>
+                    <td>production/development</td>
+                    <td>No</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="page-break"></div>
+
+        <!-- Section 9 -->
+        <div class="section">
+            <h1>9. Monitoring & Maintenance</h1>
+
+            <h2>9.1 Regular Health Checks</h2>
+            <p><strong>Daily:</strong> Visit health endpoint</p>
+            <pre>https://langgraph-ai-assistant.onrender.com/health</pre>
+            <p><strong>Expected response:</strong> <code>"status": "healthy"</code></p>
+
+            <h2>9.2 Checking Render Logs</h2>
+            <ol>
+                <li>Go to https://dashboard.render.com</li>
+                <li>Select your service</li>
+                <li>Click "Logs" tab</li>
+                <li>Scroll to see recent activity</li>
+                <li>Look for errors or warnings</li>
+            </ol>
+
+            <h2>9.3 Success Indicators</h2>
+            <table>
+                <tr>
+                    <th>Log Message</th>
+                    <th>Meaning</th>
+                    <th>Action</th>
+                </tr>
+                <tr>
+                    <td><code>✓✓✓ VECTOR DB CREATION SUCCESSFUL</code></td>
+                    <td>Indexing complete</td>
+                    <td>Ready to serve</td>
+                </tr>
+                <tr>
+                    <td><code>Uvicorn running on 0.0.0.0:8000</code></td>
+                    <td>Server started</td>
+                    <td>Operational</td>
+                </tr>
+                <tr>
+                    <td><code>POST /whatsapp "200 OK"</code></td>
+                    <td>Message processed</td>
+                    <td>Normal</td>
+                </tr>
+            </table>
+
+            <h2>9.4 Performance Monitoring</h2>
+            <p>Track query performance:</p>
+            <pre>Response Time Goal:     2-5 seconds
+Vector DB Search:       ~500ms
+OpenAI API Call:        ~1.5-2s
+Total Overhead:         ~200ms</pre>
+
+            <h2>9.5 Maintenance Tasks</h2>
+            <table>
+                <tr>
+                    <th>Task</th>
+                    <th>Frequency</th>
+                    <th>Purpose</th>
+                </tr>
+                <tr>
+                    <td>Health check</td>
+                    <td>Daily</td>
+                    <td>Ensure uptime</td>
+                </tr>
+                <tr>
+                    <td>Log review</td>
+                    <td>Weekly</td>
+                    <td>Detect issues</td>
+                </tr>
+                <tr>
+                    <td>DB rebuild</td>
+                    <td>As needed</td>
+                    <td>After adding docs</td>
+                </tr>
+                <tr>
+                    <td>API key rotation</td>
+                    <td>Quarterly</td>
+                    <td>Security</td>
+                </tr>
+            </table>
+
+            <h2>9.6 Automatic Redeploy</h2>
+            <p>Render automatically redeploys when:</p>
+            <ul>
+                <li>You push code to GitHub (main branch)</li>
+                <li>You update environment variables</li>
+                <li>Service crashes (auto-restart)</li>
+            </ul>
+            <p><strong>Redeploy time:</strong> 2-3 minutes</p>
+        </div>
+
+        <div class="page-break"></div>
+
+        <!-- Section 10 -->
+        <div class="section">
+            <h1>10. Troubleshooting Guide</h1>
+
+            <h2>10.1 Common Issues & Solutions</h2>
+
+            <h3>Issue: "Vector DB not found"</h3>
+            <p><strong>Symptoms:</strong> Health endpoint shows <code>"vector_db": "not_ready"</code></p>
+            <p><strong>Cause:</strong> First deployed or vector DB deleted</p>
+            <p><strong>Solution:</strong></p>
+            <pre>POST https://langgraph-ai-assistant.onrender.com/rebuild-vector-db</pre>
+            <p>Wait 45-60 seconds for indexing to complete.</p>
+
+            <h3>Issue: "Document folder not found"</h3>
+            <p><strong>Symptoms:</strong> Logs show <code>Error: Document folder not found</code></p>
+            <p><strong>Cause:</strong> Documents not committed to git</p>
+            <p><strong>Solution:</strong></p>
+            <ol>
+                <li>Verify PDFs are in <code>Agents/data/documents/</code></li>
+                <li>Run: <code>git add Agents/data/documents/</code></li>
+                <li>Commit and push</li>
+                <li>Rebuild vector DB</li>
+            </ol>
+
+            <h3>Issue: "WhatsApp not responding"</h3>
+            <p><strong>Symptoms:</strong> Send message but get no response</p>
+            <p><strong>Causes & Solutions:</strong></p>
+            <table>
+                <tr>
+                    <th>Check</th>
+                    <th>Action</th>
+                </tr>
+                <tr>
+                    <td>Render service running?</td>
+                    <td>Visit /health endpoint</td>
+                </tr>
+                <tr>
+                    <td>Twilio webhook correct?</td>
+                    <td>Verify URL not Cloudflare tunnel</td>
+                </tr>
+                <tr>
+                    <td>OpenAI API key valid?</td>
+                    <td>Check Render environment vars</td>
+                </tr>
+                <tr>
+                    <td>Message format?</td>
+                    <td>Twilio shows POST errors in logs</td>
+                </tr>
+            </table>
+
+            <h3>Issue: "Slow response times" (&gt;10 seconds)</h3>
+            <p><strong>Causes:</strong></p>
+            <ul>
+                <li>OpenAI API rate limits</li>
+                <li>Large number of documents in DB</li>
+                <li>Render free tier overloaded</li>
+            </ul>
+            <p><strong>Solutions:</strong></p>
+            <ul>
+                <li>Rebuild vector DB to optimize</li>
+                <li>Upgrade Render plan</li>
+                <li>Reduce chunk size for faster search</li>
+                <li>Check OpenAI status page</li>
+            </ul>
+
+            <h3>Issue: "FAISS index corrupted"</h3>
+            <p><strong>Symptoms:</strong> Cryptic FAISS error in logs</p>
+            <p><strong>Solution:</strong> Rebuild vector DB (deletes and recreates index)</p>
+
+            <h2>10.2 Checking Logs in Detail</h2>
+            <p><strong>Location:</strong> Render Dashboard → Service → Logs</p>
+            <p><strong>Search for:</strong></p>
+            <pre># Success patterns:
+✓✓✓ VECTOR DB CREATION SUCCESSFUL
+Uvicorn running on
+==> Your service is live 🎉
+
+# Error patterns:
+ERROR:
+Exception:
+FileNotFoundError:
+ConnectionError:</pre>
+
+            <h2>10.3 Reset Vector Database</h2>
+            <p>If vector DB becomes corrupted:</p>
+            <ol>
+                <li>SSH into Render or use dashboard</li>
+                <li>Delete: <code>/app/Agents/data/vector_db/</code></li>
+                <li>Call rebuild endpoint</li>
+                <li>Wait for indexing to complete</li>
+            </ol>
+
+            <h2>10.4 When to Contact Support</h2>
+            <p>If you see these errors, contact support:</p>
+            <ul>
+                <li><code>OPENAI_API_KEY invalid/expired</code> → OpenAI support</li>
+                <li><code>Twilio webhook authentication failed</code> → Twilio support</li>
+                <li><code>PostgreSQL connection refused</code> → Render support</li>
+                <li><code>OutOfMemory exception</code> → Upgrade Render plan</li>
+            </ul>
+
+            <h2>10.5 Emergency Rollback</h2>
+            <p>If deployment breaks:</p>
+            <ol>
+                <li>Find last working commit in GitHub</li>
+                <li>Run: <code>git revert [broken-commit]</code></li>
+                <li>Push to GitHub</li>
+                <li>Render auto-redeploys to previous version</li>
+            </ol>
+        </div>
+
+        <div class="page-break"></div>
+
+        <!-- Conclusion -->
+        <div class="section">
+            <h1>Quick Reference Summary</h1>
+
+            <h2>Deployment Checklist</h2>
+            <table>
+                <tr>
+                    <th>Step</th>
+                    <th>Task</th>
+                    <th>Status</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>Create Render account & connect GitHub</td>
+                    <td>☐</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Add OPENAI_API_KEY to Render environment</td>
+                    <td>☐</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Wait for first deployment (3 minutes)</td>
+                    <td>☐</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Verify health endpoint responds</td>
+                    <td>☐</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>Update Twilio webhook URL</td>
+                    <td>☐</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>Test WhatsApp message</td>
+                    <td>☐</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>Verify Vector DB ready</td>
+                    <td>☐</td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>System live & operational</td>
+                    <td>☐</td>
+                </tr>
+            </table>
+
+            <h2>Key URLs & Resources</h2>
+            <table>
+                <tr>
+                    <th>Service</th>
+                    <th>URL</th>
+                    <th>Purpose</th>
+                </tr>
+                <tr>
+                    <td>Your App</td>
+                    <td>https://langgraph-ai-assistant.onrender.com</td>
+                    <td>Main service URL</td>
+                </tr>
+                <tr>
+                    <td>Health Check</td>
+                    <td>/health endpoint</td>
+                    <td>Status verification</td>
+                </tr>
+                <tr>
+                    <td>Rebuild DB</td>
+                    <td>POST /rebuild-vector-db</td>
+                    <td>Document updates</td>
+                </tr>
+                <tr>
+                    <td>Render Dashboard</td>
+                    <td>https://dashboard.render.com</td>
+                    <td>Deployment management</td>
+                </tr>
+                <tr>
+                    <td>GitHub Repo</td>
+                    <td>satyaailearning-blip/Langgraph_AI_Assistant</td>
+                    <td>Source code</td>
+                </tr>
+            </table>
+
+            <h2>Critical Settings to Remember</h2>
+            <table>
+                <tr>
+                    <th>Setting</th>
+                    <th>Value</th>
+                    <th>Never Change</th>
+                </tr>
+                <tr>
+                    <td>Render Environment</td>
+                    <td>Docker</td>
+                    <td>✓</td>
+                </tr>
+                <tr>
+                    <td>Dockerfile Path</td>
+                    <td>./Dockerfile</td>
+                    <td>✓</td>
+                </tr>
+                <tr>
+                    <td>Start Command</td>
+                    <td>Detected auto</td>
+                    <td>✓</td>
+                </tr>
+                <tr>
+                    <td>Port</td>
+                    <td>8000</td>
+                    <td>✓</td>
+                </tr>
+                <tr>
+                    <td>Webhook URL</td>
+                    <td>/whatsapp (POST)</td>
+                    <td>✓</td>
+                </tr>
+            </table>
+
+            <h2>Performance Benchmarks</h2>
+            <table>
+                <tr>
+                    <th>Operation</th>
+                    <th>Time</th>
+                    <th>Notes</th>
+                </tr>
+                <tr>
+                    <td>Initial Render Deploy</td>
+                    <td>3-5 min</td>
+                    <td>Includes vector DB creation</td>
+                </tr>
+                <tr>
+                    <td>Subsequent Redeploy</td>
+                    <td>1-2 min</td>
+                    <td>DB already exists</td>
+                </tr>
+                <tr>
+                    <td>WhatsApp Response</td>
+                    <td>2-5 sec</td>
+                    <td>Query to response</td>
+                </tr>
+                <tr>
+                    <td>RAG Search</td>
+                    <td>~500ms</td>
+                    <td>Vector DB lookup</td>
+                </tr>
+                <tr>
+                    <td>Vector DB Rebuild</td>
+                    <td>45-60 sec</td>
+                    <td>560 chunks indexed</td>
+                </tr>
+            </table>
+
+            <h2>Cost Analysis (Free Tier)</h2>
+            <table>
+                <tr>
+                    <th>Service</th>
+                    <th>Cost</th>
+                    <th>Limits</th>
+                </tr>
+                <tr>
+                    <td>Render Hosting</td>
+                    <td>$0/month</td>
+                    <td>750 hours (spins down after 15min inactivity)</td>
+                </tr>
+                <tr>
+                    <td>OpenAI API</td>
+                    <td>Pay-as-you-go</td>
+                    <td>$0.15/1M embeddings, $0.10/1M LLM tokens</td>
+                </tr>
+                <tr>
+                    <td>Twilio WhatsApp</td>
+                    <td>Pay-per-message</td>
+                    <td>~$0.005 per message</td>
+                </tr>
+                <tr>
+                    <td>GitHub</td>
+                    <td>$0/month</td>
+                    <td>Unlimited public repos</td>
+                </tr>
+                <tr>
+                    <td><strong>Total</strong></td>
+                    <td><strong>~$5-20/month</strong></td>
+                    <td><strong>Based on usage</strong></td>
+                </tr>
+            </table>
+
+            <h2>Next Steps & Future Enhancements</h2>
+            <ul>
+                <li>✅ <strong>Completed:</strong> Basic RAG + General AI system</li>
+                <li>✅ <strong>Completed:</strong> Vector DB auto-initialization</li>
+                <li>✅ <strong>Completed:</strong> Document rebuild endpoint</li>
+                <li>⏳ <strong>Potential:</strong> Conversation history storage</li>
+                <li>⏳ <strong>Potential:</strong> User authentication</li>
+                <li>⏳ <strong>Potential:</strong> Admin dashboard</li>
+                <li>⏳ <strong>Potential:</strong> Multiple agent types</li>
+                <li>⏳ <strong>Potential:</strong> Custom fine-tuned models</li>
+            </ul>
+
+            <h2>Support Resources</h2>
+            <table>
+                <tr>
+                    <th>Issue</th>
+                    <th>Resource</th>
+                </tr>
+                <tr>
+                    <td>LangGraph questions</td>
+                    <td>https://langchain-ai.github.io/langgraph/</td>
+                </tr>
+                <tr>
+                    <td>Render deployment issues</td>
+                    <td>https://render.com/docs/</td>
+                </tr>
+                <tr>
+                    <td>OpenAI API problems</td>
+                    <td>https://platform.openai.com/docs/</td>
+                </tr>
+                <tr>
+                    <td>Twilio WhatsApp help</td>
+                    <td>https://www.twilio.com/docs/whatsapp/</td>
+                </tr>
+                <tr>
+                    <td>FAISS documentation</td>
+                    <td>https://faiss.ai/</td>
+                </tr>
+            </table>
+
+            <h2>Document Information</h2>
+            <p>
+                <strong>Guide Version:</strong> 1.0<br>
+                <strong>Last Updated:</strong> March 29, 2026<br>
+                <strong>System Status:</strong> ✅ Production Ready<br>
+                <strong>Deployment Status:</strong> ✅ Live on Render<br>
+                <strong>Vector DB Status:</strong> ✅ Ready (560 chunks)<br>
+                <strong>WhatsApp Integration:</strong> ✅ Configured
+            </p>
+
+            <div class="success">
+                <strong>🎉 Your LangGraph AI Assistant is now deployed and operational!</strong><br><br>
+                The system is ready to handle WhatsApp queries 24/7. Monitor the health endpoint regularly and rebuild the vector database when documents are updated. For production use, consider upgrading to Render Pro tier for guaranteed uptime and better performance.
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>LangGraph Multi-Agent WhatsApp AI Assistant - Complete Deployment Guide v1.0</p>
+            <p>Generated: March 29, 2026 | For print, use Ctrl+P or File → Print with A4 page size</p>
+        </div>
+    </div>
+</body>
+</html>
