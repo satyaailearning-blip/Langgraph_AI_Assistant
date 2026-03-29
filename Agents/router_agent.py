@@ -11,11 +11,14 @@ def route_question(question: str) -> str:
 
     rag_keywords = [
         "tag", "datasheet", "sow", "specification", "site survey",
-        "observation", "observations", "dcs", "esd", "fgs", "whp",
-        "cpp", "platform", "wellhead", "instrument", "icss",
+        "observation", "observations", "dcs", "esd", "fgs", "whp", "WHCP", 
+        "wellhead control panel", "deliverable", "software", "SPI", "smart plant instrumentation",
+        "project","cpp", "platform", "wellhead", "instrument", "icss",
         "modbus", "cabinet", "panel", "project", "uad", "ltdp",
         "scope of work", "adequacy", "survey", "pipeline class",
-        "pipe class", "control system", "siemens", "yokogawa"
+        "pipe class", "control system", "siemens", "yokogawa", "honeywell", 
+        "emerson", "schneider", "rockwell", "ABB", "foxboro", "deltav",
+         "centum", "dcs system",
     ]
 
     if any(keyword in q for keyword in rag_keywords):
@@ -32,7 +35,7 @@ Classify the user's question into one of these two categories only:
 Return only one word:
 rag
 or
-general
+general ai
 
 Examples:
 Question: What is the pipe class of Tag No. 265BDV230100?
@@ -48,6 +51,12 @@ Question: Explain Python list comprehension.
 Answer: general
 
 Question: What is the scope of UAD LTDP-2?
+Answer: rag
+
+Question: Who are OEMs Original Equipment Manufacturers in the project or scope?
+Answer: rag
+
+Question: What are softwares in the project or scope like SPI, Smart plant instrumentation, instrucalc, AVEVA, SIL?
 Answer: rag
 
 Question: {question}
